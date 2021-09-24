@@ -1,2 +1,2 @@
-web: npx concurrently "npm run server" "npm run serve"
+web: npm run server
 worker: npm run server
