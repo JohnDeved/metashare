@@ -1,17 +1,23 @@
 import React from 'react'
 import logo from './logo.svg'
 import './App.css'
-import { useP2PT } from './helper/p2pt'
+import { useMetashare } from './hooks/metashare'
+import { Helmet } from 'react-helmet'
 
 const App = () => {
-  const { peersCount, seederCount, p2pt } = useP2PT()
+  const { peers, peerCount } = useMetashare()
+
+  console.log(peers)
 
   return (
     <div className="App">
+      <Helmet>
+        <title>MetaShare • {peerCount?.toString()} Peers</title>
+      </Helmet>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo"/>
         <p>
-          peers: {peersCount} seeder: {seederCount}
+          peers: {peerCount}
         </p>
         <a
           className="App-link"

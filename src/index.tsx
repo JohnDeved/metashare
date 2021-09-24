@@ -4,21 +4,13 @@ import './index.css'
 import App from './App'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
-import { p2pt, P2PTProvider } from './helper/p2pt'
-
-p2pt.start()
-p2pt.on('peerconnect', peer => {
-  p2pt.send(peer, { test: 1 })
-})
-p2pt.on('msg', (peer, msg) => {
-  console.log('msg', peer, msg)
-})
+import { MetashareProvider } from './hooks/metashare'
 
 ReactDOM.render(
   <React.StrictMode>
-    <P2PTProvider>
+    <MetashareProvider>
       <App/>
-    </P2PTProvider>
+    </MetashareProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 )
