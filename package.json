@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mapbox/node-pre-gyp": "^1.0.5",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -12,7 +13,6 @@
     "@types/react-dom": "^16.9.14",
     "concurrently": "^6.2.1",
     "events": "^3.3.0",
-    "node-pre-gyp": "^0.17.0",
     "p2pt": "^1.5.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
