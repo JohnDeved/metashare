@@ -4,7 +4,7 @@ import './index.css'
 import App from './App'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
-import { p2pt } from './helper/p2pt'
+import { p2pt, P2PTProvider } from './helper/p2pt'
 
 p2pt.start()
 p2pt.on('peerconnect', peer => {
@@ -16,7 +16,9 @@ p2pt.on('msg', (peer, msg) => {
 
 ReactDOM.render(
   <React.StrictMode>
-    <App/>
+    <P2PTProvider>
+      <App/>
+    </P2PTProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 )
