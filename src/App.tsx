@@ -6,8 +6,6 @@ import { useP2PT } from './helper/p2pt'
 const App = () => {
   const { peersCount, seederCount, p2pt } = useP2PT()
 
-  console.log(p2pt)
-
   return (
     <div className="App">
       <header className="App-header">
