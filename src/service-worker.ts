@@ -13,6 +13,7 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
+import { p2pt } from './helper/p2pt';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -76,5 +77,13 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
 });
+
+p2pt.start()
+p2pt.on('peerconnect', peer => {
+  p2pt.send(peer, { test: 1 })
+})
+p2pt.on('msg', (peer, msg) => {
+  console.log('msg', peer, msg)
+})
 
 // Any other custom service worker logic can go here.

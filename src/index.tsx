@@ -4,6 +4,15 @@ import './index.css';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import { p2pt } from './helper/p2pt';
+
+p2pt.start()
+p2pt.on('peerconnect', peer => {
+  p2pt.send(peer, { test: 1 })
+})
+p2pt.on('msg', (peer, msg) => {
+  console.log('msg', peer, msg)
+})
 
 ReactDOM.render(
   <React.StrictMode>
