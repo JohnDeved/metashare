@@ -5,7 +5,7 @@ import { useMetashare } from './hooks/metashare'
 import { Helmet } from 'react-helmet'
 
 const App = () => {
-  const { peerCount } = useMetashare()
+  const { peerCount, postCount, sendAll } = useMetashare()
 
   // console.log(peers)
 
@@ -19,14 +19,18 @@ const App = () => {
         <p>
           peers: {peerCount}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p>
+          posts: {postCount}
+        </p>
+        <button onClick={() => sendAll?.({
+          type: 'response-post',
+          id: 'tt1798709',
+          data: [
+            'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          ],
+        })}
+        >submit Movie
+        </button>
       </header>
     </div>
   )

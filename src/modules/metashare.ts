@@ -1,7 +1,7 @@
 import type { Peer } from 'p2pt'
 import { p2pt } from './p2pt'
-import idb from 'idb'
-import type { IMetaMessage, IMetaRequestPost, IMetaRequestPosts, IMetaResponsePost, IMetaResponsePosts, IMetashareDB, IPostMeta } from '../types/metashare'
+import * as idb from 'idb'
+import type { IMetaMessage, IMetaRequestPost, IMetaResponsePost, IMetaResponsePosts, IMetashareDB, IPostMeta } from '../types/metashare'
 
 export const regex = {
   imdbId: /^tt\d{7}$/,
@@ -32,11 +32,16 @@ export async function metashare (hooks?: IMetaHooks) {
   const postsIds = await db.getAllKeys('posts')
   hooks?.setPosts(postsIds)
 
-  p2pt.on('peerconnect', (peer) => {
+  p2pt.on('peerconnect', async (peer) => {
     console.log('peer connected', peer.id)
     if (!peers.find(p => p.id === peer.id)) {
       peers.push(peer)
       hooks?.setPeers([...peers])
+
+      const postIds = await db.getAllKeys('posts')
+      if (!postIds.length) return
+
+      handlePostsRequest(peer)
     }
   })
 
@@ -52,7 +57,7 @@ export async function metashare (hooks?: IMetaHooks) {
   p2pt.on<Partial<IMetaMessage>>('msg', (peer, msg) => {
     switch (msg.type) {
       case 'request-posts':
-        return handlePostsRequest(msg, peer)
+        return handlePostsRequest(peer)
       case 'request-post':
         return handlePostRequest(msg, peer)
       case 'response-posts':
@@ -65,20 +70,20 @@ export async function metashare (hooks?: IMetaHooks) {
   p2pt.on('trackerconnect', tracker => console.log('tracker connected', tracker.announceUrl))
   p2pt.on('trackerwarning', err => console.warn('tracker warning', err))
 
-  async function handlePostsRequest (message: Partial<IMetaRequestPosts>, peer: Peer) {
-    console.log('got posts request')
+  async function handlePostsRequest (peer: Peer) {
     const posts = await db.getAllKeys('posts')
 
     p2pt.send(peer, {
       type: 'response-posts',
       data: posts,
-    })
+    }).catch(console.error)
   }
 
   async function handlePostRequest (message: Partial<IMetaRequestPost>, peer: Peer) {
     if (typeof message.id !== 'string') return
+    if (!regex.imdbId.test(message.id)) return
 
-    console.log('got post request')
+    console.log('got post request', message.id)
     const post = await db.get('posts', message.id)
 
     if (!post?.links) return
@@ -89,7 +94,7 @@ export async function metashare (hooks?: IMetaHooks) {
       type: 'response-post',
       id: message.id,
       data: post.links,
-    })
+    }).catch(console.error)
   }
 
   async function handlePostsResponse (message: Partial<IMetaResponsePosts>, peer: Peer) {
@@ -104,8 +109,16 @@ export async function metashare (hooks?: IMetaHooks) {
 
       const meta = await getPostMeta(postId)
       if (!meta) continue
-      console.log('saved post meta', postId, meta)
       await db.put('posts', meta, postId)
+      console.log('saved post meta', postId, meta)
+      hooks?.setPosts(await db.getAllKeys('posts'))
+
+      for (const peer of peers) {
+        p2pt.send(peer, {
+          type: 'request-post',
+          id: postId,
+        }).catch(console.error)
+      }
     }
   }
 
@@ -114,19 +127,29 @@ export async function metashare (hooks?: IMetaHooks) {
     if (!postId) return
     const links = message.data
     if (!Array.isArray(links)) return
+    let prePost = await db.get('posts', postId)
+    if (prePost) {
+      if (prePost.links) {
+        const oldLinks = prePost.links
+        // todo: check if link is regex valid
+        const newLinks = links.filter(link => !oldLinks.includes(link))
+        if (newLinks.length === 0) return
+      }
+    }
+
+    if (!prePost?.image) prePost = await getPostMeta(postId)
+    if (!prePost) return
     console.log('got post response', postId)
 
-    const meta = await getPostMeta(postId)
-    if (!meta) return
-
     const post = {
-      image: meta.image,
-      title: meta.title,
-      description: meta.description,
+      image: prePost.image,
+      title: prePost.title,
+      description: prePost.description,
       links,
     }
-    console.log('saved post', postId, post)
     await db.put('posts', post, postId)
+    console.log('saved post', postId, post)
+    hooks?.setPosts(await db.getAllKeys('posts'))
   }
 
   async function getPostMeta (id: string) {

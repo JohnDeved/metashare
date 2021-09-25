@@ -2,15 +2,17 @@ import type { Peer } from 'p2pt'
 import { useRef, useState, useCallback, useEffect } from 'react'
 import { metashare } from '../modules/metashare'
 import { p2pt } from '../modules/p2pt'
+import type { IMetaMessage } from '../types/metashare'
 import { createMetaStore } from './meta'
 
 const { Provider: MetashareProvider, useHook: useMetashare } = createMetaStore(() => {
   const p2ptRef = useRef(p2pt)
   const [peers, setPeers] = useState<Peer[]>([])
+  const [posts, setPosts] = useState<string[]>([])
 
-  const sendAll = useCallback((data: Object) => {
+  const sendAll = useCallback((data: IMetaMessage) => {
     for (const peer of peers) {
-      p2pt.send(peer, data)
+      p2pt.send(peer, data).catch(console.error)
     }
   }, [peers])
 
@@ -19,6 +21,7 @@ const { Provider: MetashareProvider, useHook: useMetashare } = createMetaStore((
 
     metashare({
       setPeers,
+      setPosts,
     })
   }, [p2pt])
 
@@ -26,6 +29,8 @@ const { Provider: MetashareProvider, useHook: useMetashare } = createMetaStore((
     p2pt: p2ptRef.current,
     peers,
     peerCount: peers.length,
+    posts,
+    postCount: posts.length,
     sendAll,
   }
 })
