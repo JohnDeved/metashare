@@ -17,7 +17,7 @@ declare module 'p2pt' {
     on (event: 'peerclose', listener: (peer: Peer) => void): this
     on (event: 'data', listener: (peer: Peer, data: Object) => void): this
     on (event: 'msg', listener: (peer: Peer, msg: Object) => void): this
-    on (event: 'trackerconnect', listener: (WebSocketTracker, stats) => void): this
+    on (event: 'trackerconnect', listener: (tracker: WebSocketTracker, stats) => void): this
     on (event: 'trackerwarning', listener: (Error: Error, stats) => void): this
   }
 
@@ -34,5 +34,9 @@ declare module 'p2pt' {
     iceCompleteTimeout: number
     destroying: boolean
     id: string
+  }
+
+  export interface WebSocketTracker {
+    announceUrl: string
   }
 }

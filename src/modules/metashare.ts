@@ -27,4 +27,7 @@ export function metashare (hooks?: metaHooks) {
       hooks?.setPeers([...peers])
     }
   })
+
+  p2pt.on('trackerconnect', tracker => console.log('tracker connected', tracker.announceUrl))
+  p2pt.on('trackerwarning', err => console.warn('tracker warning', err))
 }
