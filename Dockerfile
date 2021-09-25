@@ -6,4 +6,4 @@ RUN npm install
 
 COPY . .
 
-CMD [ "npm", "run", "server" ]
+CMD [ "npm", "run", "puppeteer" ]

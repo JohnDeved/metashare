@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet'
 const App = () => {
   const { peers, peerCount } = useMetashare()
 
-  console.log(peers)
+  // console.log(peers)
 
   return (
     <div className="App">
