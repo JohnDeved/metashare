@@ -1,13 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ESNext",
     "lib": [
-      "esnext"
+      "esnext",
+      "dom",
     ],
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
   },
   "include": [
-    "src"
+    "src",
+    "scripts"
   ]
 }
