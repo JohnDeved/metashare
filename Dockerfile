@@ -6,4 +6,4 @@ RUN npm install
 
 COPY . .
 
-CMD [ "concurrently", "npx bittorrent-tracker --ws --port $PORT", "npm run server" ]
+CMD [ "npx", "concurrently", "npx bittorrent-tracker --ws --port $PORT", "npm run server" ]
