@@ -16,7 +16,7 @@ declare module 'p2pt' {
     on (event: 'peerconnect', listener: (peer: Peer) => void): this
     on (event: 'peerclose', listener: (peer: Peer) => void): this
     on (event: 'data', listener: (peer: Peer, data: Object) => void): this
-    on (event: 'msg', listener: (peer: Peer, msg: Object) => void): this
+    on <T = Object>(event: 'msg', listener: (peer: Peer, msg: T) => void): this
     on (event: 'trackerconnect', listener: (tracker: WebSocketTracker, stats) => void): this
     on (event: 'trackerwarning', listener: (Error: Error, stats) => void): this
   }

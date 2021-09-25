@@ -13,6 +13,7 @@
     "bittorrent-tracker": "^9.18.2",
     "concurrently": "^6.2.1",
     "events": "^3.3.0",
+    "idb": "^6.1.4",
     "p2pt": "^1.5.0",
     "puppeteer": "^10.4.0",
     "react": "^17.0.2",
@@ -37,8 +38,10 @@
     "workbox-streams": "^5.1.4"
   },
   "devDependencies": {
+    "@types/concurrently": "^6.2.1",
     "@types/eslint": "^7.28.0",
     "@types/events": "^3.0.0",
+    "@types/lokijs": "^1.5.7",
     "@types/react-helmet": "^6.1.2",
     "@types/testing-library__jest-dom": "^5.14.1",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
