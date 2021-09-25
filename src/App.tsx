@@ -5,7 +5,7 @@ import { useMetashare } from './hooks/metashare'
 import { Helmet } from 'react-helmet'
 
 const App = () => {
-  const { peers, peerCount } = useMetashare()
+  const { peerCount } = useMetashare()
 
   // console.log(peers)
 
