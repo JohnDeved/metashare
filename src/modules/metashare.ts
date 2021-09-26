@@ -165,7 +165,7 @@ export async function metashare (hooks?: IMetaHooks) {
 
     return {
       image: res.meta['og:image'],
-      title: res.meta['og:title'],
+      title: res.meta['og:title'].replace(' - IMDb', ''),
       description: res.meta['og:description'],
     }
   }

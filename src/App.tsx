@@ -11,7 +11,7 @@ const PostCard: React.FC<{ id: string }> = ({ id }) => {
       <Box zIndex={10} pos="relative" borderRadius={10} bgColor="gray.700" height={200} width="100%" bgImage={value?.image} bgSize="cover" bgPos="center"/>
       <Box transition=".3s" _groupHover={{ opacity: 0 }} filter="blur(20px)" opacity={0.35} zIndex={1} pos="absolute" left={0} top={0} borderRadius={10} bgColor="gray.700" height={215} width="100%" bgImage={value?.image} bgSize="cover"/>
       <Center py={3}>
-        <Heading size="md">{value?.title}</Heading>
+        <Heading size="sm">{value?.title}</Heading>
       </Center>
     </Box>
   )
