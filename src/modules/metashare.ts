@@ -2,9 +2,11 @@ import type { Peer } from 'p2pt'
 import { p2pt } from './p2pt'
 import * as idb from 'idb'
 import type { IMetaMessage, IMetaRequestPost, IMetaResponsePost, IMetaResponsePosts, IMetashareDB, IPostMeta } from '../types/metashare'
+import type { IBlockchainAddresses, IBlockchainTransactions } from '../types/blockchain'
 
 export const regex = {
   imdbId: /^tt\d{7}$/,
+  url: /^(http(s)?):\/\/[(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)$/,
 }
 
 async function getDB () {
@@ -31,6 +33,8 @@ export async function metashare (hooks?: IMetaHooks) {
   p2pt.start()
   const postsIds = await db.getAllKeys('posts')
   hooks?.setPosts(postsIds)
+
+  getBlockchainData()
 
   p2pt.on('peerconnect', async (peer) => {
     console.log('peer connected', peer.id)
@@ -164,5 +168,39 @@ export async function metashare (hooks?: IMetaHooks) {
       title: res.meta['og:title'],
       description: res.meta['og:description'],
     }
+  }
+
+  async function getBlockchainData () {
+    const res = await fetch('https://api.blockchair.com/bitcoin-cash/dashboards/address/qrh76knlc8ka4neg9d28yazt4qemz6mzpge43arq64')
+      .then<IBlockchainAddresses>(res => res.json())
+      .catch(console.error)
+
+    if (!res) return
+    const txs = Object.values(res.data)
+      .map(d => d.transactions)
+      .flat()
+      .slice(0, 10)
+
+    const txsRes = await fetch(`https://api.blockchair.com/bitcoin-cash/dashboards/transactions/${txs.join(',')}`)
+      .then<IBlockchainTransactions>(res => res.json())
+      .catch(console.error)
+
+    if (!txsRes) return
+    const txsHex = Object.values(txsRes.data)
+      .map(d => d.outputs)
+      .flat()
+      .filter(o => o.type === 'nulldata')
+      .map(o => o.script_hex)
+
+    const txsAscii = txsHex.map(hex => Buffer.from(hex, 'hex').toString().slice(5))
+    const txsUrl = txsAscii.filter(tx => regex.url.test(tx))[0]
+
+    if (!txsUrl) return
+    const data = await fetch(txsUrl, {
+      headers: {
+        origin: 'metashare',
+      },
+    }).then(res => res.json()).catch(console.error)
+    console.log(data)
   }
 }
