@@ -9,7 +9,7 @@ export const regex = {
   url: /^(http(s)?):\/\/[(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)$/,
 }
 
-async function getDB () {
+export async function getDB () {
   return idb.openDB<IMetashareDB>('metashareDB', 1, {
     upgrade (db, oldv) {
       if (oldv < 1) {

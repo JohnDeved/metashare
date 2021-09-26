@@ -1,38 +1,47 @@
 import React from 'react'
 import logo from './logo.svg'
-import './App.css'
-import { useMetashare } from './hooks/metashare'
+import { useMetashare, usePostMeta } from './hooks/metashare'
 import { Helmet } from 'react-helmet'
+import { Text, Box, Button, Container, SimpleGrid, useColorMode, Image, Center, Heading, Flex } from '@chakra-ui/react'
+
+const PostCard: React.FC<{ id: string }> = ({ id }) => {
+  const { loading, value } = usePostMeta(id)
+  return (
+    <Box transition=".3s" _hover={{ boxShadow: 'xs' }} boxShadow="dark-lg" cursor="pointer" role="group" pos="relative" bg="gray.900" p={2} borderRadius={10}>
+      <Box zIndex={10} pos="relative" borderRadius={10} bgColor="gray.700" height={200} width="100%" bgImage={value?.image} bgSize="cover" bgPos="center"/>
+      <Box transition=".3s" _groupHover={{ opacity: 0 }} filter="blur(20px)" opacity={0.35} zIndex={1} pos="absolute" left={0} top={0} borderRadius={10} bgColor="gray.700" height={215} width="100%" bgImage={value?.image} bgSize="cover"/>
+      <Center py={3}>
+        <Heading size="md">{value?.title}</Heading>
+      </Center>
+    </Box>
+  )
+}
 
 const App = () => {
-  const { peerCount, postCount, sendAll } = useMetashare()
-
-  // console.log(peers)
+  const { posts, peerCount, postCount, sendAll } = useMetashare()
 
   return (
-    <div className="App">
+    <Box >
       <Helmet>
         <title>MetaShare • {peerCount?.toString()} Peers</title>
       </Helmet>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo"/>
-        <p>
-          peers: {peerCount}
-        </p>
-        <p>
-          posts: {postCount}
-        </p>
-        <button onClick={() => sendAll?.({
-          type: 'response-post',
-          id: 'tt1798709',
-          data: [
-            'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-          ],
-        })}
-        >submit Movie
-        </button>
-      </header>
-    </div>
+      <Box py={5}>
+        <Container maxW="container.lg">
+          <Flex justifyContent="space-between" alignItems="center">
+            <Box>
+              <Heading size="lg">MetaShare</Heading>
+              <Text>Seeders: {peerCount} • Posts: {postCount}</Text>
+            </Box>
+            <Button>Submit Link</Button>
+          </Flex>
+        </Container>
+      </Box>
+      <Container py={10} maxW="container.lg">
+        <SimpleGrid columns={[1, 2, 3]} spacing="40px">
+          {posts?.map(post => <PostCard key={post} id={post}/>)}
+        </SimpleGrid>
+      </Container>
+    </Box>
   )
 }
 

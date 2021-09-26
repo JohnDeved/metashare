@@ -1,16 +1,28 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
 import App from './App'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
 import { MetashareProvider } from './hooks/metashare'
+import type { ThemeConfig } from '@chakra-ui/react'
+import { ChakraProvider, extendTheme, ColorModeScript } from '@chakra-ui/react'
+
+// 2. Add your color mode config
+const config: ThemeConfig = {
+  initialColorMode: 'dark',
+  useSystemColorMode: false,
+}
+
+const theme = extendTheme({ config })
 
 ReactDOM.render(
   <React.StrictMode>
-    <MetashareProvider>
-      <App/>
-    </MetashareProvider>
+    <ChakraProvider theme={theme}>
+      <MetashareProvider>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode}/>
+        <App/>
+      </MetashareProvider>
+    </ChakraProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 )

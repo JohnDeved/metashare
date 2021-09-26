@@ -5,4 +5,4 @@ import setGlobalVars from 'indexeddbshim'
 globalThis.fetch = fetch
 global.window = global as any
 setGlobalVars(global.window, {checkOrigin: false})
-metashare(undefined)
+metashare()

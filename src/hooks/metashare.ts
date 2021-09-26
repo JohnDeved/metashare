@@ -1,9 +1,10 @@
 import type { Peer } from 'p2pt'
 import { useRef, useState, useCallback, useEffect } from 'react'
-import { metashare } from '../modules/metashare'
+import { metashare, getDB } from '../modules/metashare'
 import { p2pt } from '../modules/p2pt'
 import type { IMetaMessage } from '../types/metashare'
 import { createMetaStore } from './meta'
+import { useAsync } from 'react-use'
 
 const { Provider: MetashareProvider, useHook: useMetashare } = createMetaStore(() => {
   const p2ptRef = useRef(p2pt)
@@ -38,4 +39,11 @@ const { Provider: MetashareProvider, useHook: useMetashare } = createMetaStore((
 export {
   MetashareProvider,
   useMetashare,
+}
+
+export function usePostMeta (id: string) {
+  return useAsync(async () => {
+    const db = await getDB()
+    return db.get('posts', id)
+  }, [id])
 }
