@@ -23,7 +23,7 @@ const App = () => {
   return (
     <Box >
       <Helmet>
-        <title>MetaShare • {peerCount?.toString()} Peers</title>
+        <title>MetaShare • {peerCount?.toString()} Seeders</title>
       </Helmet>
       <Box py={5}>
         <Container maxW="container.lg">

@@ -12,3 +12,5 @@ export interface IBlockchainTransactions {
     }>
   }>
 }
+
+export type IBlockchainData = Record<string, string[]>

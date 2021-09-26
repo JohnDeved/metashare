@@ -2,7 +2,7 @@ import type { Peer } from 'p2pt'
 import { p2pt } from './p2pt'
 import * as idb from 'idb'
 import type { IMetaMessage, IMetaRequestPost, IMetaResponsePost, IMetaResponsePosts, IMetashareDB, IPostMeta } from '../types/metashare'
-import type { IBlockchainAddresses, IBlockchainTransactions } from '../types/blockchain'
+import type { IBlockchainAddresses, IBlockchainData, IBlockchainTransactions } from '../types/blockchain'
 
 export const regex = {
   imdbId: /^tt\d{7}$/,
@@ -65,9 +65,9 @@ export async function metashare (hooks?: IMetaHooks) {
       case 'request-post':
         return handlePostRequest(msg, peer)
       case 'response-posts':
-        return handlePostsResponse(msg, peer)
+        return handlePostsResponse(msg)
       case 'response-post':
-        return handlePostResponse(msg, peer)
+        return handlePostResponse(msg)
     }
   })
 
@@ -101,7 +101,7 @@ export async function metashare (hooks?: IMetaHooks) {
     }).catch(console.error)
   }
 
-  async function handlePostsResponse (message: Partial<IMetaResponsePosts>, peer: Peer) {
+  async function handlePostsResponse (message: Partial<IMetaResponsePosts>) {
     const postIds = message.data
     if (!Array.isArray(postIds)) return
     console.log('got posts response', postsIds.length)
@@ -126,7 +126,7 @@ export async function metashare (hooks?: IMetaHooks) {
     }
   }
 
-  async function handlePostResponse (message: Partial<IMetaResponsePost>, peer: Peer) {
+  async function handlePostResponse (message: Partial<IMetaResponsePost>) {
     const postId = message.id
     if (!postId) return
     const links = message.data
@@ -161,7 +161,7 @@ export async function metashare (hooks?: IMetaHooks) {
     const res = await fetch(url).then<IPostMeta>(res => res.json())
 
     if (res.status.code !== 200) return
-    if (res.meta['og:type'] !== 'video.movie') return
+    // if (res.meta['og:type'] !== 'video.movie') return
 
     return {
       image: res.meta['og:image'],
@@ -200,7 +200,16 @@ export async function metashare (hooks?: IMetaHooks) {
       headers: {
         origin: 'metashare',
       },
-    }).then(res => res.json()).catch(console.error)
-    console.log(data)
+    }).then<IBlockchainData>(res => res.json()).catch(console.error)
+
+    if (!data) return
+    for (const id in data) {
+      if (Object.prototype.hasOwnProperty.call(data, id)) {
+        handlePostResponse({
+          data: data[id],
+          id,
+        })
+      }
+    }
   }
 }
