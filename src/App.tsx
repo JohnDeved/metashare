@@ -8,7 +8,7 @@ const PostCard: React.FC<{ id: string }> = ({ id }) => {
   const { loading, value } = usePostMeta(id)
   return (
     <Box transition=".3s" _hover={{ boxShadow: 'xs' }} boxShadow="dark-lg" cursor="pointer" role="group" pos="relative" bg="gray.700" p={2} borderRadius={10}>
-      <Box zIndex={10} pos="relative" borderRadius={10} bgColor="gray.700" height={200} width="100%" bgImage={value?.image} bgSize="cover" bgPos="center"/>
+      <Box zIndex={10} pos="relative" borderRadius={10} bgColor="gray.600" height={200} width="100%" bgImage={value?.image} bgSize="cover" bgPos="center"/>
       <Box transition=".3s" _groupHover={{ opacity: 0 }} filter="blur(20px)" opacity={0.35} zIndex={1} pos="absolute" left={0} top={0} borderRadius={10} bgColor="gray.700" height={215} width="100%" bgImage={value?.image} bgSize="cover"/>
       <Heading py={3} textAlign="center" size="xs">{value?.title}</Heading>
     </Box>
