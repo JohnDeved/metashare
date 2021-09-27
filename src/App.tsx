@@ -129,7 +129,7 @@ const App = () => {
                     <Facepalm/>
                   </Text>
                   <Heading>No Posts</Heading>
-                  <Text>Dont worry! I&apos;m sure the will load soon.</Text>
+                  <Text>Dont worry! I&apos;m sure they will load soon.</Text>
                 </VStack>
               </Center>
             )}
