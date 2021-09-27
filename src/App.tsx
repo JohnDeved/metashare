@@ -1,18 +1,32 @@
 import React from 'react'
 import { useMetashare, usePostMeta } from './hooks/metashare'
 import { Helmet } from 'react-helmet'
-import { Text, Box, Button, Container, SimpleGrid, useColorMode, Image, Center, Heading, Flex, Stack, Input, InputGroup, InputLeftElement, Modal, ModalOverlay, useDisclosure, FormControl, FormLabel, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, HStack, Textarea, VStack } from '@chakra-ui/react'
+import { Text, Box, Button, Container, SimpleGrid, useColorMode, Image, Center, Heading, Flex, Stack, Input, InputGroup, InputLeftElement, Modal, ModalOverlay, useDisclosure, FormControl, FormLabel, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, HStack, Textarea, VStack, IconButton } from '@chakra-ui/react'
 import { AddIcon, PhoneIcon, QuestionIcon, SearchIcon, SettingsIcon } from '@chakra-ui/icons'
+import { Link, BrowserRouter as Router, Switch as RouterSwitch, Route } from 'react-router-dom'
+import Facepalm from './svg/Facepalm'
 
 const PostCard: React.FC<{ id: string }> = ({ id }) => {
   const { loading, value } = usePostMeta(id)
   return (
-    <Box transition=".3s" _hover={{ bg: 'gray.600', transform: 'scale(1.05)', boxShadow: 'md' }} boxShadow="lg" cursor="pointer" role="group" pos="relative" bg="gray.700" p={2} borderRadius={10}>
-      <Box overflow="hidden" borderRadius={10}>
-        <Box _groupHover={{ transform: 'scale(1.1)' }} transition=".3s" zIndex={10} pos="relative" bgColor="gray.600" height={200} width="100%" bgImage={value?.image} bgSize="cover" bgPos="center"/>
+    <Link to={`/post/${id}`}>
+      <Box transition=".3s" _hover={{ bg: 'gray.600', transform: 'scale(1.05)', boxShadow: 'md' }} boxShadow="lg" cursor="pointer" role="group" pos="relative" bg="gray.700" p={2} borderRadius={10}>
+        <Box overflow="hidden" borderRadius={10}>
+          <Box _groupHover={{ transform: 'scale(1.1)' }} transition=".3s" zIndex={10} pos="relative" bgColor="gray.600" height={200} width="100%" bgImage={value?.image} bgSize="cover" bgPos="center"/>
+        </Box>
+        <Box _groupHover={{ transform: 'scale(1.1)' }} transition=".3s" filter="blur(20px)" opacity={0.35} zIndex={1} pos="absolute" left={0} top={0} borderRadius={10} bgColor="gray.700" height={215} width="100%" bgImage={value?.image} bgSize="cover"/>
+        <Heading py={3} textAlign="center" size="xs">{value?.title}</Heading>
       </Box>
-      <Box _groupHover={{ transform: 'scale(1.1)' }} transition=".3s" filter="blur(20px)" opacity={0.35} zIndex={1} pos="absolute" left={0} top={0} borderRadius={10} bgColor="gray.700" height={215} width="100%" bgImage={value?.image} bgSize="cover"/>
-      <Heading py={3} textAlign="center" size="xs">{value?.title}</Heading>
+    </Link>
+  )
+}
+
+const PostPage: React.FC = () => {
+  return (
+    <Box>
+      <Link to="/">
+        <Button>Back</Button>
+      </Link>
     </Box>
   )
 }
@@ -22,7 +36,7 @@ const App = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
-    <Box >
+    <Router>
       <Helmet>
         <title>MetaShare • {peerCount?.toString()} Seeders</title>
       </Helmet>
@@ -42,7 +56,7 @@ const App = () => {
                 <Button><AddIcon mr={2}/> Submit</Button>
               </Box>
               <Box>
-                <Button onClick={onOpen}><SettingsIcon/></Button>
+                <IconButton aria-label="User Settings" onClick={onOpen} icon={<SettingsIcon/>}/>
                 <Modal
                   isOpen={isOpen}
                   onClose={onClose}
@@ -103,11 +117,29 @@ const App = () => {
         </Container>
       </Box>
       <Container py={10} maxW="container.lg">
-        <SimpleGrid columns={[1, 2, 3]} spacing="40px">
-          {posts?.map(post => <PostCard key={post} id={post}/>)}
-        </SimpleGrid>
+        <RouterSwitch>
+          <Route path="/post/:id">
+            <PostPage/>
+          </Route>
+          <Route path="/">
+            {!posts?.length && (
+              <Center>
+                <VStack>
+                  <Text fontSize="200px" color="whiteAlpha.100">
+                    <Facepalm/>
+                  </Text>
+                  <Heading>No Posts</Heading>
+                  <Text>Dont worry! I&apos;m sure the will load soon.</Text>
+                </VStack>
+              </Center>
+            )}
+            <SimpleGrid columns={[1, 2, 3]} spacing="40px">
+              {posts?.map(post => <PostCard key={post} id={post}/>)}
+            </SimpleGrid>
+          </Route>
+        </RouterSwitch>
       </Container>
-    </Box>
+    </Router>
   )
 }
 
