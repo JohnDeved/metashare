@@ -192,7 +192,7 @@ export async function metashare (hooks?: IMetaHooks) {
       .filter(o => o.type === 'nulldata')
       .map(o => o.script_hex)
 
-    const txsAscii = txsHex.map(hex => Buffer.from(hex, 'hex').toString().slice(5))
+    const txsAscii = txsHex.map(hex => Buffer.from(hex.slice(10), 'hex').toString())
     const txsUrl = txsAscii.filter(tx => regex.url.test(tx))[0]
 
     if (!txsUrl) return
