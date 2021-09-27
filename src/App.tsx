@@ -7,9 +7,11 @@ import { AddIcon, PhoneIcon, QuestionIcon, SearchIcon, SettingsIcon } from '@cha
 const PostCard: React.FC<{ id: string }> = ({ id }) => {
   const { loading, value } = usePostMeta(id)
   return (
-    <Box transition=".3s" _hover={{ bg: 'gray.600', transform: 'scale(1.05)', boxShadow: 'dark-lg' }} boxShadow="lg" cursor="pointer" role="group" pos="relative" bg="gray.700" p={2} borderRadius={10}>
-      <Box zIndex={10} pos="relative" borderRadius={10} bgColor="gray.600" height={200} width="100%" bgImage={value?.image} bgSize="cover" bgPos="center"/>
-      <Box transition=".3s" filter="blur(20px)" opacity={0.35} zIndex={1} pos="absolute" left={0} top={0} borderRadius={10} bgColor="gray.700" height={215} width="100%" bgImage={value?.image} bgSize="cover"/>
+    <Box transition=".3s" _hover={{ bg: 'gray.600', transform: 'scale(1.05)', boxShadow: 'md' }} boxShadow="lg" cursor="pointer" role="group" pos="relative" bg="gray.700" p={2} borderRadius={10}>
+      <Box overflow="hidden" borderRadius={10}>
+        <Box _groupHover={{ transform: 'scale(1.1)' }} transition=".3s" zIndex={10} pos="relative" bgColor="gray.600" height={200} width="100%" bgImage={value?.image} bgSize="cover" bgPos="center"/>
+      </Box>
+      <Box _groupHover={{ transform: 'scale(1.1)' }} transition=".3s" filter="blur(20px)" opacity={0.35} zIndex={1} pos="absolute" left={0} top={0} borderRadius={10} bgColor="gray.700" height={215} width="100%" bgImage={value?.image} bgSize="cover"/>
       <Heading py={3} textAlign="center" size="xs">{value?.title}</Heading>
     </Box>
   )
